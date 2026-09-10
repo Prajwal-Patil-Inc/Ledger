@@ -136,7 +136,6 @@ function copyFromPreviousMonth() {
   copy.expenses.forEach((e) => {
     e.id = uid();
     e.paid = "No";
-    e.amount = 0;
   });
   copy.bills.forEach((b) => {
     b.id = uid();
@@ -193,8 +192,12 @@ function pct(n) {
   return Math.round((n || 0) * 1000) / 10 + "%";
 }
 function totalIncome(m) { return (m.income.net || 0) + (m.income.other || 0) + (m.income.bonus || 0); }
-function totalExpenses(m) { return m.expenses.reduce((a, e) => a + (Number(e.amount) || 0), 0); }
-function totalByType(m, type) { return m.expenses.filter((e) => e.type === type).reduce((a, e) => a + (Number(e.amount) || 0), 0); }
+function totalExpenses(m) { return m.expenses.filter((e) => e.paid === "Yes").reduce((a, e) => a + (Number(e.amount) || 0), 0); }
+function totalByType(m, type) {
+  return m.expenses
+    .filter((e) => e.type === type && e.paid === "Yes")
+    .reduce((a, e) => a + (Number(e.amount) || 0), 0);
+}
 
 let toastTimer = null;
 function toast(msg) {
@@ -267,7 +270,6 @@ function renderDashboard() {
       copy.expenses.forEach((e) => {
         e.id = uid();
         e.paid = "No";
-        e.amount = 0;
       });
       copy.bills.forEach((b) => {
         b.id = uid();
@@ -941,9 +943,6 @@ function openSettingsModal() {
   };
   document.getElementById("s-clear-this-month").onclick = () => {
     if (confirm("This deletes this  month's, bill and goal stored on this device. This can't be undone. Continue?")) {
-      state.month = emptyMonth();
-      persist();
-      renderDashboard();
       copyFromPreviousMonth();
       closeModal();
       renderAll();
