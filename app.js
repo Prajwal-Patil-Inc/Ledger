@@ -124,6 +124,60 @@ function persist() {
   if (state.month) saveMonth(state.monthKey, state.month);
 }
 
+// Month reset
+
+function copyFromPreviousMonth() {
+  const prevKey = previousMonthKeyBefore(state.monthKey);
+  if (!prevKey) { toast("No previous month to copy from"); return false; }
+  const prevData = loadMonth(prevKey);
+  const copy = JSON.parse(JSON.stringify(prevData));
+  // Bring over the category/bill *structure* only — not last month's amounts.
+  // Nothing should count toward this month's totals until it's actually confirmed.
+  copy.expenses.forEach((e) => {
+    e.id = uid();
+    e.paid = "No";
+    e.amount = 0;
+  });
+  copy.bills.forEach((b) => {
+    b.id = uid();
+    b.paid = "No";
+    b.cost = 0;
+    if (b.due) b.due = shiftDateToMonth(b.due, state.cursor);
+    if (b.renewal) b.renewal = shiftDateToMonth(b.renewal, state.cursor);
+  });
+  state.month = copy;
+  persist();
+  renderAll();
+  toast("Copied last month");
+  return true;
+}
+ 
+function clearMonthExpenses() {
+  if (!state.month || !state.month.expenses.length) { toast("No expenses to clear"); return; }
+  const { month } = monthLabel(state.cursor);
+  if (!confirm(`Delete all expenses for ${month}? Bills, goals and income are left untouched.`)) return;
+  state.month.expenses = [];
+  persist();
+  renderAll();
+  toast("Expenses cleared");
+}
+ 
+function resetMonthBlank() {
+  const { month } = monthLabel(state.cursor);
+  const verb = state.month ? "Reset" : "Start";
+  if (state.month && !confirm(`${verb} ${month} completely? This clears income, expenses and bills for this month only — other months are untouched.`)) return;
+  startMonthBlank({ silent: true });
+  toast("Month reset");
+}
+ 
+function resetMonthFromPrevious() {
+  const prevKey = previousMonthKeyBefore(state.monthKey);
+  if (!prevKey) { toast("No previous month to copy from"); return; }
+  const { month } = monthLabel(state.cursor);
+  if (state.month && !confirm(`Replace ${month}'s data with last month's category list? Amounts start at zero. This can't be undone.`)) return;
+  copyFromPreviousMonth();
+}
+
 /* ---------------- Helpers ---------------- */
 
 function fmt(n) {
@@ -841,6 +895,9 @@ function openSettingsModal() {
     </div>
     <input type="file" id="s-import-file" accept="application/json" style="display:none;">
     <div class="modal-actions">
+      <button class="btn btn-danger" id="s-clear-this-month" style="flex:none; width:100%;">Clear this month</button>
+    </div>
+    <div class="modal-actions">
       <button class="btn btn-danger" id="s-clear" style="flex:none; width:100%;">Erase all data on this device</button>
     </div>
   `);
@@ -877,6 +934,17 @@ function openSettingsModal() {
       localStorage.clear();
       state.settings = { ...DEFAULT_SETTINGS };
       state.goals = [];
+      closeModal();
+      renderAll();
+      toast("All data erased");
+    }
+  };
+  document.getElementById("s-clear-this-month").onclick = () => {
+    if (confirm("This deletes this  month's, bill and goal stored on this device. This can't be undone. Continue?")) {
+      state.month = emptyMonth();
+      persist();
+      renderDashboard();
+      copyFromPreviousMonth();
       closeModal();
       renderAll();
       toast("All data erased");
