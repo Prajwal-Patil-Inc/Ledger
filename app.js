@@ -140,7 +140,6 @@ function copyFromPreviousMonth() {
   copy.bills.forEach((b) => {
     b.id = uid();
     b.paid = "No";
-    b.cost = 0;
     if (b.due) b.due = shiftDateToMonth(b.due, state.cursor);
     if (b.renewal) b.renewal = shiftDateToMonth(b.renewal, state.cursor);
   });
@@ -274,7 +273,6 @@ function renderDashboard() {
       copy.bills.forEach((b) => {
         b.id = uid();
         b.paid = "No";
-        b.cost = 0;
         if (b.due) b.due = shiftDateToMonth(b.due, state.cursor);
         if (b.renewal) b.renewal = shiftDateToMonth(b.renewal, state.cursor);
       });
