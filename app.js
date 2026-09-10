@@ -27,6 +27,18 @@ function todayISO() {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
+function shiftDateToMonth(dateStr, targetMonthDate) {
+  // Move a stored date onto targetMonthDate's month/year, keeping the same
+  // day-of-month (clamped so e.g. the 31st in Feb becomes the 28th/29th).
+  const old = new Date(dateStr);
+  if (isNaN(old)) return dateStr;
+  const y = targetMonthDate.getFullYear();
+  const mo = targetMonthDate.getMonth();
+  const lastDay = new Date(y, mo + 1, 0).getDate();
+  const day = Math.min(old.getDate(), lastDay);
+  const d = new Date(y, mo, day);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
 
 function loadSettings() {
   try {
@@ -68,20 +80,27 @@ function previousMonthKeyBefore(key) {
 
 /* ---------------- App state ---------------- */
 
+function loadLastCursor() {
+  const saved = localStorage.getItem("ledger_last_cursor"); // "YYYY-MM"
+  if (saved) {
+    const [y, mo] = saved.split("-").map(Number);
+    if (y && mo) return new Date(y, mo - 1, 1);
+  }
+  return null;
+}
+function saveCursor() {
+  localStorage.setItem("ledger_last_cursor", monthKey(state.cursor));
+}
+
 const state = {
-  cursor: new Date(2026, 7, 1), // August 2026 — sample "current" month; user's real device date also respected on fresh install
+  cursor: loadLastCursor() || new Date(), // resume where you left off; else today's real month
   tab: "dashboard",
   settings: loadSettings(),
   goals: loadGoals(),
   month: null,
   monthKey: null,
 };
-
-// On first-ever load (no data at all), default the cursor to the real device month.
-if (listMonthKeys().length === 0) {
-  const now = new Date();
-  state.cursor = new Date(now.getFullYear(), now.getMonth(), 1);
-}
+state.cursor = new Date(state.cursor.getFullYear(), state.cursor.getMonth(), 1);
 
 function currentMK() { return monthKey(state.cursor); }
 
@@ -178,7 +197,7 @@ function renderDashboard() {
     el.innerHTML = `
       <div class="empty-state" style="padding-top:60px;">
         <h3>No data for this month yet</h3>
-        <p>Start fresh, or copy last month's income, categories and bills as a starting point.</p>
+        <p>Start fresh, or bring over last month's income and category list — amounts reset to zero so nothing is deducted until you fill them in.</p>
         <div class="modal-actions" style="max-width:280px; margin:0 auto;">
           <button class="btn btn-ghost" id="startBlank">Start blank</button>
           ${prev ? `<button class="btn btn-primary" id="copyPrev">Copy last month</button>` : ""}
@@ -189,8 +208,20 @@ function renderDashboard() {
     if (copyBtn) copyBtn.onclick = () => {
       const prevData = loadMonth(prevKey);
       const copy = JSON.parse(JSON.stringify(prevData));
-      copy.expenses.forEach((e) => (e.id = uid(), e.paid = "No"));
-      copy.bills.forEach((b) => (b.id = uid(), b.paid = "No"));
+      // Bring over the category/bill *structure* only — not last month's amounts.
+      // Nothing should count toward this month's totals until it's actually confirmed.
+      copy.expenses.forEach((e) => {
+        e.id = uid();
+        e.paid = "No";
+        e.amount = 0;
+      });
+      copy.bills.forEach((b) => {
+        b.id = uid();
+        b.paid = "No";
+        b.cost = 0;
+        if (b.due) b.due = shiftDateToMonth(b.due, state.cursor);
+        if (b.renewal) b.renewal = shiftDateToMonth(b.renewal, state.cursor);
+      });
       state.month = copy;
       persist();
       renderAll();
@@ -892,10 +923,12 @@ function init() {
 
   document.getElementById("prevMonth").onclick = () => {
     state.cursor = new Date(state.cursor.getFullYear(), state.cursor.getMonth() - 1, 1);
+    saveCursor();
     renderAll();
   };
   document.getElementById("nextMonth").onclick = () => {
     state.cursor = new Date(state.cursor.getFullYear(), state.cursor.getMonth() + 1, 1);
+    saveCursor();
     renderAll();
   };
   document.querySelectorAll(".tab-btn").forEach((b) => {
