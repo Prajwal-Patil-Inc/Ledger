@@ -943,7 +943,9 @@ function openSettingsModal() {
   };
   document.getElementById("s-clear-this-month").onclick = () => {
     if (confirm("This deletes this  month's, bill and goal stored on this device. This can't be undone. Continue?")) {
-      copyFromPreviousMonth();
+      const key = currentMK();
+      localStorage.removeItem("ledger_month_" + key);
+      renderDashboard();
       closeModal();
       renderAll();
       toast("All data erased");
