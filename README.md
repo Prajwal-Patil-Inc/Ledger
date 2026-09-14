@@ -102,7 +102,7 @@ This gives you an immediate view of upcoming commitments and anything that requi
 <table>
   <tr>
     <td align="center">
-      <img src="screenshots/Bills.png" width="90%" alt="Bills tab">
+      <img src="screenshots/Bills.png" width="35%" alt="Bills tab">
       <br>
       <strong>Bills tab</strong>
     </td>
@@ -128,7 +128,7 @@ Progress indicators make it easy to see how close you are to reaching each goal.
 <table>
   <tr>
     <td align="center">
-      <img src="screenshots/Savings.png" width="90%" alt="Savings tab">
+      <img src="screenshots/Savings.png" width="35%" alt="Savings tab">
       <br>
       <strong>Savings tab</strong>
     </td>
@@ -143,7 +143,7 @@ Centralized settings allow you to customize the experience without changing the 
 <table>
   <tr>
     <td align="center">
-      <img src="screenshots/Settings.png" width="90%" alt="Settings tab">
+      <img src="screenshots/Settings.png" width="35%" alt="Settings tab">
       <br>
       <strong>Savings tab</strong>
     </td>
@@ -290,34 +290,37 @@ Updating spending breakdowns
 
 The goal of testing is to ensure that changes made in one part of the application are correctly reflected throughout the rest of the financial dashboard.
 
-🚀 Live App
+## 🚀 Live App
 
 The app is live and can be accessed here:
 
-https://prajwal-patil-inc.github.io/Ledger/
+**https://prajwal-patil-inc.github.io/Ledger/**
 
 No installation or setup is required — simply open the link in your browser and start using the app.
 
-📲 Install the App
+## 📲 Install the App
 
 The app is a Progressive Web App (PWA), so you can install it on your phone and access it like a regular app.
 
-Android — Google Chrome
-Open the app in Google Chrome.
-Tap the ⋮ three-dot menu in the top-right corner.
-Select Add to Home screen or Install app.
-Confirm by tapping Install or Add.
-The app will appear on your Android home screen.
+### Android — Google Chrome
 
-iPhone — Google Chrome
-Open the app in Google Chrome.
-Tap the Share button.
-Scroll through the options and select Add to Home Screen.
-Choose a name for the app if required.
-Tap Add.
-The app will appear on your iPhone home screen and can be opened like a regular app.
+1. Open the app in **Google Chrome**.
+2. Tap the **⋮ three-dot menu** in the top-right corner.
+3. Select **Add to Home screen** or **Install app**.
+4. Confirm by tapping **Install** or **Add**.
+5. The app will appear on your Android home screen.
 
-Note: PWA installation options can vary slightly depending on your browser and device version.
+### iPhone — Google Chrome
+
+1. Open the app in **Google Chrome**.
+2. Tap the **Share** button.
+3. Scroll through the options and select **Add to Home Screen**.
+4. Choose a name for the app if required.
+5. Tap **Add**.
+6. The app will appear on your iPhone home screen and can be opened like a regular app.
+
+> **Note:** PWA installation options can vary slightly depending on your browser and device version.
+
 🔐 Financial Data
 
 This application is intended as a personal finance management tool.
