@@ -23,6 +23,12 @@ Emergency fund calculator
 
 The financial health indicator provides an easy-to-understand GREEN / YELLOW / RED status based on your financial position and configured thresholds.
 
+Home tab - 
+<img src="screenshots/Home.png" width="35%" alt="Home tab">
+
+Copy from previous month - 
+<img src="screenshots/Home-Page-Copy.png" width="35%" alt="Home Copy from previous">
+
 💳 Expense Tracking
 
 Track and categorize your spending without maintaining complicated spreadsheets.
@@ -40,8 +46,11 @@ Expenses are automatically incorporated into your financial summaries and calcul
 
 The app also provides a visual breakdown of spending by category.
 
-<img src="screenshots/Expenses-tab.png" width="50%" alt="Expenses tab">
+Expenses tab - 
+<img src="screenshots/Expenses-tab.png" width="35%" alt="Expenses tab">
 
+Add expenses - 
+<img src="screenshots/Add-expenses.png" width="35%" alt="Add Expenses">
 
 📅 Annual Overview
 
@@ -71,6 +80,9 @@ Bills are automatically categorized by their current status:
 
 This gives you an immediate view of upcoming commitments and anything that requires attention.
 
+Bills tab - 
+<img src="screenshots/Bills.png" width="35%" alt="Bills tab">
+
 🎯 Savings Goals
 
 Create and monitor savings goals with visual progress tracking.
@@ -86,9 +98,15 @@ Long-term targets
 
 Progress indicators make it easy to see how close you are to reaching each goal.
 
+Savings tab - 
+<img src="screenshots/Savings.png" width="35%" alt="Savings tab">
+
 ⚙️ Settings
 
 Centralized settings allow you to customize the experience without changing the underlying application logic.
+
+Settings - 
+<img src="screenshots/Settings.png" width="35%" alt="Settings tab">
 
 Configurable areas include:
 
