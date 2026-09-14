@@ -483,7 +483,32 @@ function openExpenseModal(id) {
     <div class="field-row">
       <div class="field">
         <label for="f-amt">Monthly amount</label>
-        <input id="f-amt" type="number" inputmode="decimal" step="0.01" placeholder="0.00" value="${existing ? existing.amount : ""}">
+
+        <div class="amount-input">
+          <input
+            id="f-amt"
+            type="number"
+            inputmode="decimal"
+            step="0.01"
+            placeholder="0.00"
+            value="${existing ? existing.amount : ""}"
+          >
+
+          <button type="button" id="add-amt">+</button>
+        </div>
+
+        <div id="add-amount-area" class="add-amount-area" hidden>
+          <input
+            id="f-add-amt"
+            type="number"
+            inputmode="decimal"
+            step="0.01"
+            placeholder="Amount to add"
+          >
+
+          <button type="button" id="confirm-add">Add</button>
+          <button type="button" id="cancel-add">Cancel</button>
+        </div>
       </div>
       <div class="field">
         <label for="f-due">Due date (day)</label>
@@ -543,6 +568,45 @@ function openExpenseModal(id) {
     renderAll();
     toast("Expense deleted");
   };
+const amountInput = document.getElementById("f-amt");
+const addButton = document.getElementById("add-amt");
+const addAmountArea = document.getElementById("add-amount-area");
+const addInput = document.getElementById("f-add-amt");
+const confirmAdd = document.getElementById("confirm-add");
+const cancelAdd = document.getElementById("cancel-add");
+
+addButton.addEventListener("click", () => {
+  addAmountArea.hidden = false;
+
+  // Focus the new input.
+  // On a phone this opens the numeric keyboard.
+  addInput.focus();
+});
+
+confirmAdd.addEventListener("click", () => {
+  const currentAmount = parseFloat(amountInput.value) || 0;
+  const amountToAdd = parseFloat(addInput.value);
+
+  if (isNaN(amountToAdd)) {
+    addInput.focus();
+    return;
+  }
+
+  amountInput.value = (currentAmount + amountToAdd).toFixed(2);
+
+  // Clear and hide the add box
+  addInput.value = "";
+  addAmountArea.hidden = true;
+
+  // Return focus to the main amount field if desired
+  amountInput.focus();
+});
+
+cancelAdd.addEventListener("click", () => {
+  addInput.value = "";
+  addAmountArea.hidden = true;
+});
+
 }
 
 /* ---------------- Bills ---------------- */
