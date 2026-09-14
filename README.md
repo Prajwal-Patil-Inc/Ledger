@@ -108,7 +108,7 @@ This gives you an immediate view of upcoming commitments and anything that requi
 <table>
   <tr>
     <td align="center">
-      <img src="screenshots/Bills.png" width="90%" alt="Bills tab">
+      <img src="screenshots/Bills.png" width="35%" alt="Bills tab">
       <br>
       <strong>Bills tab</strong>
     </td>
@@ -135,7 +135,7 @@ Visual progress indicators make it easy to see how close you are to reaching eac
 <table>
   <tr>
     <td align="center">
-      <img src="screenshots/Savings.png" width="90%" alt="Savings tab">
+      <img src="screenshots/Savings.png" width="35%" alt="Savings tab">
       <br>
       <strong>Savings tab</strong>
     </td>
@@ -150,7 +150,7 @@ Centralized settings allow you to customize the experience without changing the 
 <table>
   <tr>
     <td align="center">
-      <img src="screenshots/Settings.png" width="90%" alt="Settings tab">
+      <img src="screenshots/Settings.png" width="35%" alt="Settings tab">
       <br>
       <strong>Savings tab</strong>
     </td>
