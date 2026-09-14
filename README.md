@@ -23,11 +23,21 @@ Emergency fund calculator
 
 The financial health indicator provides an easy-to-understand GREEN / YELLOW / RED status based on your financial position and configured thresholds.
 
-Home tab - 
-<img src="screenshots/Home.png" width="35%" alt="Home tab">
+<table>
+  <tr>
+    <td align="center">
+      <img src="screenshots/Home.png" width="90%" alt="Home tab">
+      <br>
+      <strong>Home tab</strong>
+    </td>
+    <td align="center">
+      <img src="screenshots/Home-Page-Copy.png" width="90%" alt="Home Copy from previous">
+      <br>
+      <strong>Copy from previous month</strong>
+    </td>
+  </tr>
+</table>
 
-Copy from previous month - 
-<img src="screenshots/Home-Page-Copy.png" width="35%" alt="Home Copy from previous">
 
 💳 Expense Tracking
 
@@ -89,8 +99,16 @@ Bills are automatically categorized by their current status:
 
 This gives you an immediate view of upcoming commitments and anything that requires attention.
 
-Bills tab - 
-<img src="screenshots/Bills.png" width="35%" alt="Bills tab">
+<table>
+  <tr>
+    <td align="center">
+      <img src="screenshots/Bills.png" width="90%" alt="Bills tab">
+      <br>
+      <strong>Bills tab</strong>
+    </td>
+  </tr>
+</table>
+
 
 🎯 Savings Goals
 
@@ -107,15 +125,31 @@ Long-term targets
 
 Progress indicators make it easy to see how close you are to reaching each goal.
 
-Savings tab - 
-<img src="screenshots/Savings.png" width="35%" alt="Savings tab">
+<table>
+  <tr>
+    <td align="center">
+      <img src="screenshots/Savings.png" width="90%" alt="Savings tab">
+      <br>
+      <strong>Savings tab</strong>
+    </td>
+  </tr>
+</table>
+
 
 ⚙️ Settings
 
 Centralized settings allow you to customize the experience without changing the underlying application logic.
 
-Settings - 
-<img src="screenshots/Settings.png" width="35%" alt="Settings tab">
+<table>
+  <tr>
+    <td align="center">
+      <img src="screenshots/Settings.png" width="90%" alt="Settings tab">
+      <br>
+      <strong>Savings tab</strong>
+    </td>
+  </tr>
+</table>
+
 
 Configurable areas include:
 
@@ -256,22 +290,34 @@ Updating spending breakdowns
 
 The goal of testing is to ensure that changes made in one part of the application are correctly reflected throughout the rest of the financial dashboard.
 
-🚀 Getting Started
+🚀 Live App
 
-Clone the repository and install the project's dependencies using the package manager and commands defined by the project.
+The app is live and can be accessed here:
 
-Then start the development server and open the application in your browser.
+https://prajwal-patil-inc.github.io/Ledger/
 
-For production, build the application using the project's production build command and deploy the generated application to a web host that supports serving a PWA.
+No installation or setup is required — simply open the link in your browser and start using the app.
 
-Add the project's exact installation and development commands here once the final framework/build setup is documented.
+📲 Install the App
 
-📲 Installing the PWA
+The app is a Progressive Web App (PWA), so you can install it on your phone and access it like a regular app.
 
-On supported browsers and devices, the application can be installed from the browser's install/add-to-home-screen functionality.
+Android — Google Chrome
+Open the app in Google Chrome.
+Tap the ⋮ three-dot menu in the top-right corner.
+Select Add to Home screen or Install app.
+Confirm by tapping Install or Add.
+The app will appear on your Android home screen.
 
-Once installed, it behaves more like a native application, providing a dedicated entry point for quickly accessing your finances.
+iPhone — Google Chrome
+Open the app in Google Chrome.
+Tap the Share button.
+Scroll through the options and select Add to Home Screen.
+Choose a name for the app if required.
+Tap Add.
+The app will appear on your iPhone home screen and can be opened like a regular app.
 
+Note: PWA installation options can vary slightly depending on your browser and device version.
 🔐 Financial Data
 
 This application is intended as a personal finance management tool.
