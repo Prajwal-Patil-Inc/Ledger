@@ -40,6 +40,9 @@ Expenses are automatically incorporated into your financial summaries and calcul
 
 The app also provides a visual breakdown of spending by category.
 
+![Expenses tab](screenshots/Expenses-tab.png)
+
+
 📅 Annual Overview
 
 See your finances across the year rather than looking at individual months in isolation.
