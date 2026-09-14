@@ -1,6 +1,5 @@
 # Ledger
-Monthly bills record management app
-
+Primarily built to be used on smartphones.
 Personal Finance Dashboard
 
 A modern, installable Progressive Web App (PWA) for managing personal finances, tracking expenses and bills, monitoring savings goals, and understanding overall financial health.
