@@ -46,11 +46,20 @@ Expenses are automatically incorporated into your financial summaries and calcul
 
 The app also provides a visual breakdown of spending by category.
 
-Expenses tab - 
-<img src="screenshots/Expenses-tab.png" width="35%" alt="Expenses tab">
-
-Add expenses - 
-<img src="screenshots/Add-expenses.png" width="35%" alt="Add Expenses">
+<table>
+  <tr>
+    <td align="center">
+      <img src="screenshots/Expenses-tab.png" width="90%" alt="Expenses tab">
+      <br>
+      Expenses tab
+    </td>
+    <td align="center">
+      <img src="screenshots/Add-expenses.png" width="90%" alt="Add Expenses">
+      <br>
+      Add expenses
+    </td>
+  </tr>
+</table>
 
 📅 Annual Overview
 
