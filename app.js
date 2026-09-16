@@ -361,9 +361,13 @@ function drawDonut(m) {
     (Number(m.income?.other) || 0) +
     (Number(m.income?.bonus) || 0);
 
+  const paidExpenses = (m.expenses || []).filter(
+    (e) => e.paid === "Yes"
+  );
+
   // group by category
   const byCat = {};
-  m.expenses.forEach((e) => { byCat[e.category] = (byCat[e.category] || 0) + (Number(e.amount) || 0); });
+  paidExpenses.forEach((e) => { byCat[e.category] = (byCat[e.category] || 0) + (Number(e.amount) || 0); });
   let entries = Object.entries(byCat).filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]);
   if (entries.length > 7) {
     const head = entries.slice(0, 6);
@@ -375,7 +379,11 @@ function drawDonut(m) {
   if(savings > 0){
     entries.push(["Savings", savings]);
   }
+
+  const legend = document.getElementById("legend");
+
   if(income <= 0 || entries.length === 0){
+    legend.innerHTML = "";
     return;
   }
   //const total = entries.reduce((a, [, v]) => a + v, 0);
@@ -403,7 +411,6 @@ function drawDonut(m) {
   ctx.fill();
   ctx.globalCompositeOperation = "source-over";
 
-  const legend = document.getElementById("legend");
   legend.innerHTML = entries.map(([name, val], i) => {
       const percentage = val / income;
 
