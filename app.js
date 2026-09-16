@@ -356,6 +356,11 @@ function drawDonut(m) {
   const cx = size / 2, cy = size / 2, rOuter = size / 2 - 6, rInner = rOuter * 0.6;
   ctx.clearRect(0, 0, size, size);
 
+  const income =
+    (Number(m.income?.net) || 0) +
+    (Number(m.income?.other) || 0) +
+    (Number(m.income?.bonus) || 0);
+
   // group by category
   const byCat = {};
   m.expenses.forEach((e) => { byCat[e.category] = (byCat[e.category] || 0) + (Number(e.amount) || 0); });
@@ -365,15 +370,29 @@ function drawDonut(m) {
     const restSum = entries.slice(6).reduce((a, [, v]) => a + v, 0);
     entries = [...head, ["Other", restSum]];
   }
-  const total = entries.reduce((a, [, v]) => a + v, 0);
+  const totalExpenses = entries.reduce((a, [, v]) => a + v, 0);
+  const savings = Math.max(0, income - totalExpenses);
+  if(savings > 0){
+    entries.push(["Savings", savings]);
+  }
+  if(income <= 0 || entries.length === 0){
+    return;
+  }
+  //const total = entries.reduce((a, [, v]) => a + v, 0);
   let start = -Math.PI / 2;
   entries.forEach(([name, val], i) => {
-    const angle = (val / total) * Math.PI * 2;
+    const percentage = val / income;
+    const angle = percentage * Math.PI * 2;
+    
     ctx.beginPath();
     ctx.moveTo(cx, cy);
     ctx.arc(cx, cy, rOuter, start, start + angle);
     ctx.closePath();
-    ctx.fillStyle = CATEGORY_PALETTE[i % CATEGORY_PALETTE.length];
+    if(name === "Savings"){
+      ctx.fillStyle = "#22c55e";
+    }else{
+      ctx.fillStyle = CATEGORY_PALETTE[i % CATEGORY_PALETTE.length];
+    }
     ctx.fill();
     start += angle;
   });
@@ -385,12 +404,30 @@ function drawDonut(m) {
   ctx.globalCompositeOperation = "source-over";
 
   const legend = document.getElementById("legend");
-  legend.innerHTML = entries.map(([name, val], i) => `
-    <div class="legend-row">
-      <span class="legend-swatch" style="background:${CATEGORY_PALETTE[i % CATEGORY_PALETTE.length]}"></span>
-      <span class="legend-name">${escapeHtml(name)}</span>
-      <span class="legend-pct">${pct(val / total)}</span>
-    </div>`).join("");
+  legend.innerHTML = entries.map(([name, val], i) => {
+      const percentage = val / income;
+
+      return `
+        <div class="legend-row">
+          <span
+            class="legend-swatch"
+            style="background:${
+              name === "Savings"
+                ? "#22c55e"
+                : CATEGORY_PALETTE[i % CATEGORY_PALETTE.length]
+            }">
+          </span>
+
+          <span class="legend-name">
+            ${escapeHtml(name)}
+          </span>
+
+          <span class="legend-pct">
+            ${pct(percentage)}
+          </span>
+        </div>
+      `;
+    }).join("");
 }
 
 function escapeHtml(str) {
