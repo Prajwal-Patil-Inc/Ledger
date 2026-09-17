@@ -330,7 +330,7 @@ function renderDashboard() {
     el.innerHTML = `
       <div class="empty-state" style="padding-top:60px;">
         <h3>No data for this month yet</h3>
-        <p>Start fresh, or bring over last month's income and category list — amounts reset to zero so nothing is deducted until you fill them in.</p>
+        <p>Start fresh, or bring over last month's income and category list - amounts reset to zero so nothing is deducted until you fill them in.</p>
         <div class="modal-actions" style="max-width:280px; margin:0 auto;">
           <button class="btn btn-ghost" id="startBlank">Start blank</button>
           ${prev ? `<button class="btn btn-primary" id="copyPrev">Copy last month</button>` : ""}
@@ -890,7 +890,7 @@ function renderGoals() {
     el.innerHTML = `
       <div class="empty-state">
         <h3>No savings goals yet</h3>
-        <p>Tap the + button to set your first goal — an emergency fund, a holiday, anything you're saving toward.</p>
+        <p>Tap the + button to set your first goal - an emergency fund, a holiday, anything you're saving toward.</p>
       </div>`;
     return;
   }
@@ -1014,7 +1014,7 @@ function openBalanceModal() {
   const current = currentBalanceForKey(state.monthKey);
   const linkNote = m.balanceMode === "linked"
     ? "This month currently follows on from last month's balance automatically. Saving a value here fixes this month to that number instead — later months linked after it will then follow from this one."
-    : "This updates itself as you mark expenses and bills Paid/Unpaid — you shouldn't need to touch it often.";
+    : "This updates itself as you mark expenses and bills Paid/Unpaid - you shouldn't need to touch it often.";
   showModal(`
     <h2>Edit balance</h2>
     <div class="helper-text" style="margin:-6px 2px 14px;">
@@ -1106,7 +1106,7 @@ function openSettingsModal() {
       <button class="btn btn-primary" id="s-save">Save</button>
     </div>
     <div class="helper-text" style="margin-top:18px; border-top:1px solid var(--hairline); padding-top:16px;">
-      Your data. Back it up before switching phones or browsers — this app stores everything only on this device.
+      Your data. Back it up before switching phones or browsers - this app stores everything only on this device.
     </div>
     <div class="modal-actions">
       <button class="btn btn-ghost" id="s-export">Export backup</button>
