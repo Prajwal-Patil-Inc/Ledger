@@ -65,8 +65,7 @@ function saveGoals(g) { localStorage.setItem("ledger_goals", JSON.stringify(g));
 
 function monthPaidTotal(m) {
   const paidExpenses = totalExpenses(m); // already filters paid === "Yes"
-  const paidBills = (m.bills || []).filter((b) => b.paid === "Yes").reduce((a, b) => a + (Number(b.cost) || 0), 0);
-  return paidExpenses + paidBills;
+  return paidExpenses;
 }
 
 function currentBalanceForKey(key, _depth = 0) {
@@ -356,9 +355,8 @@ function renderDashboard() {
 
   const balance = currentBalanceForKey(state.monthKey);
   const unpaidExpenses = m.expenses.filter((e) => e.paid !== "Yes").reduce((a, e) => a + (Number(e.amount) || 0), 0);
-  const unpaidBills = m.bills.filter((b) => b.paid !== "Yes").reduce((a, b) => a + (Number(b.cost) || 0), 0);
-  const forecast = balance - unpaidExpenses - unpaidBills;
-  const hasOutstanding = unpaidExpenses + unpaidBills > 0;
+  const forecast = balance - unpaidExpenses;
+  const hasOutstanding = unpaidExpenses > 0;
 
   el.innerHTML = `
     <div class="hero">
