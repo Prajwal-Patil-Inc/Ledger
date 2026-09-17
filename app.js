@@ -52,8 +52,72 @@ function loadGoals() {
 }
 function saveGoals(g) { localStorage.setItem("ledger_goals", JSON.stringify(g)); }
 
+// ---- Per-month balance ----
+// Each month carries its own balance, in one of two modes:
+//   "manual" — balanceValue is a fixed anchor for this month, set directly.
+//   "linked" — this month has no anchor of its own; instead its balance is
+//              computed live as (this month's income) + (the linked-from
+//              month's current balance). Because it's computed on the fly
+//              rather than snapshotted, editing an earlier month automatically
+//              ripples forward through every month linked after it.
+// Either way, whatever has actually been marked Paid this month is then
+// subtracted, since that's money that has genuinely left the account.
+
+function monthPaidTotal(m) {
+  const paidExpenses = totalExpenses(m); // already filters paid === "Yes"
+  const paidBills = (m.bills || []).filter((b) => b.paid === "Yes").reduce((a, b) => a + (Number(b.cost) || 0), 0);
+  return paidExpenses + paidBills;
+}
+
+function currentBalanceForKey(key, _depth = 0) {
+  if (_depth > 240 || !key) return 0; // guard against a pathological/circular chain
+  const m = loadMonth(key);
+  if (!m) return 0;
+  let base;
+  if (m.balanceMode === "linked" && m.balanceLinkedFrom) {
+    base = totalIncome(m) + currentBalanceForKey(m.balanceLinkedFrom, _depth + 1);
+  } else {
+    base = typeof m.balanceValue === "number" ? m.balanceValue : 0;
+  }
+  return base - monthPaidTotal(m);
+}
+
+// Default balance setup for a brand-new month: link onto whatever month came
+// right before it, if one exists, so a fresh month doesn't wrongly appear to
+// reset to zero. Only the very first month ever has nothing to link to.
+function freshMonthShell() {
+  const m = emptyMonth();
+  const prevKey = previousMonthKeyBefore(currentMK());
+  if (prevKey) {
+    m.balanceMode = "linked";
+    m.balanceLinkedFrom = prevKey;
+  }
+  return m;
+}
+
+// One-time migration: earlier versions of this app kept a single global
+// balance. Fold that old value in as every pre-existing month's manual
+// anchor, so nothing appears to jump to zero after this update.
+function migrateLegacyGlobalBalance() {
+  if (localStorage.getItem("ledger_balance_migrated")) return;
+  const legacyRaw = localStorage.getItem("ledger_balance");
+  const legacy = legacyRaw !== null ? (parseFloat(legacyRaw) || 0) : 0;
+  listMonthKeys().forEach((k) => {
+    const m = loadMonth(k);
+    if (m && !m.balanceMode) {
+      m.balanceMode = "manual";
+      m.balanceValue = legacy;
+      saveMonth(k, m);
+    }
+  });
+  localStorage.setItem("ledger_balance_migrated", "1");
+}
+
 function emptyMonth() {
-  return { income: { net: 0, other: 0, bonus: 0 }, savingsTarget: 0, expenses: [], bills: [] };
+  return {
+    income: { net: 0, other: 0, bonus: 0 }, savingsTarget: 0, expenses: [], bills: [],
+    balanceMode: "manual", balanceValue: 0, balanceLinkedFrom: null,
+  };
 }
 function loadMonth(key) {
   try {
@@ -114,7 +178,7 @@ function ensureMonth() {
 
 function getOrCreateMonth() {
   if (!state.month) {
-    state.month = emptyMonth();
+    state.month = freshMonthShell();
     saveMonth(state.monthKey, state.month);
   }
   return state.month;
@@ -125,6 +189,13 @@ function persist() {
 }
 
 // Month reset
+
+function startMonthBlank({ silent } = {}) {
+  state.month = freshMonthShell();
+  persist();
+  renderAll();
+  if (!silent) toast("New month started");
+}
 
 function copyFromPreviousMonth() {
   const prevKey = previousMonthKeyBefore(state.monthKey);
@@ -143,6 +214,12 @@ function copyFromPreviousMonth() {
     if (b.due) b.due = shiftDateToMonth(b.due, state.cursor);
     if (b.renewal) b.renewal = shiftDateToMonth(b.renewal, state.cursor);
   });
+  // This month's balance now dynamically follows last month's: income +
+  // last month's current balance, recomputed live every time it's shown —
+  // so if last month's balance changes later, this one updates too.
+  copy.balanceMode = "linked";
+  copy.balanceLinkedFrom = prevKey;
+  copy.balanceValue = 0;
   state.month = copy;
   persist();
   renderAll();
@@ -250,6 +327,7 @@ function renderDashboard() {
 
   if (!m) {
     const prev = prevKey ? loadMonth(prevKey) : null;
+    const previewBalance = prevKey ? currentBalanceForKey(prevKey) : null;
     el.innerHTML = `
       <div class="empty-state" style="padding-top:60px;">
         <h3>No data for this month yet</h3>
@@ -258,29 +336,11 @@ function renderDashboard() {
           <button class="btn btn-ghost" id="startBlank">Start blank</button>
           ${prev ? `<button class="btn btn-primary" id="copyPrev">Copy last month</button>` : ""}
         </div>
+        ${previewBalance !== null ? `<p class="helper-text" style="margin-top:16px;">Balance will carry over from last month: ${fmt(previewBalance)}</p>` : ""}
       </div>`;
-    document.getElementById("startBlank").onclick = () => { getOrCreateMonth(); renderAll(); toast("New month started"); };
+    document.getElementById("startBlank").onclick = () => startMonthBlank();
     const copyBtn = document.getElementById("copyPrev");
-    if (copyBtn) copyBtn.onclick = () => {
-      const prevData = loadMonth(prevKey);
-      const copy = JSON.parse(JSON.stringify(prevData));
-      // Bring over the category/bill *structure* only — not last month's amounts.
-      // Nothing should count toward this month's totals until it's actually confirmed.
-      copy.expenses.forEach((e) => {
-        e.id = uid();
-        e.paid = "No";
-      });
-      copy.bills.forEach((b) => {
-        b.id = uid();
-        b.paid = "No";
-        if (b.due) b.due = shiftDateToMonth(b.due, state.cursor);
-        if (b.renewal) b.renewal = shiftDateToMonth(b.renewal, state.cursor);
-      });
-      state.month = copy;
-      persist();
-      renderAll();
-      toast("Copied last month");
-    };
+    if (copyBtn) copyBtn.onclick = () => copyFromPreviousMonth();
     return;
   }
 
@@ -294,6 +354,12 @@ function renderDashboard() {
   const sorted = [...m.expenses].sort((a, b) => (b.amount || 0) - (a.amount || 0));
   const largest = sorted[0];
 
+  const balance = currentBalanceForKey(state.monthKey);
+  const unpaidExpenses = m.expenses.filter((e) => e.paid !== "Yes").reduce((a, e) => a + (Number(e.amount) || 0), 0);
+  const unpaidBills = m.bills.filter((b) => b.paid !== "Yes").reduce((a, b) => a + (Number(b.cost) || 0), 0);
+  const forecast = balance - unpaidExpenses - unpaidBills;
+  const hasOutstanding = unpaidExpenses + unpaidBills > 0;
+
   el.innerHTML = `
     <div class="hero">
       <div class="hero-label">Remaining this month</div>
@@ -301,8 +367,10 @@ function renderDashboard() {
       <div class="hero-sub">
         <span>Income <b>${fmt0(income)}</b></span>
         <span>Spent <b>${fmt0(expenses)}</b></span>
+        <span id="balanceRow" style="cursor:pointer; text-decoration:underline dotted;">Balance <b>${fmt0(balance)}</b></span>
       </div>
       <span class="chip ${health.cls}"><span class="chip-dot"></span>${health.label} · ${pct(rate)} saved</span>
+      ${hasOutstanding ? `<span class="chip ${forecast < 0 ? "brick" : "gold"}" style="margin-left:6px;">Forecast ${fmt0(forecast)} once unpaid items settle</span>` : ""}
     </div>
 
     <div class="kpi-grid">
@@ -347,6 +415,7 @@ function renderDashboard() {
   insightsEl.innerHTML = rows.join("");
 
   document.getElementById("editIncomeBtn").onclick = openIncomeModal;
+  document.getElementById("balanceRow").onclick = openBalanceModal;
 }
 
 function drawDonut(m) {
@@ -482,6 +551,8 @@ function renderExpenses() {
       ev.stopPropagation();
       const id = btn.dataset.togglePaid;
       const item = m.expenses.find((x) => x.id === id);
+      // Balance is derived live from monthPaidTotal(), so simply flipping
+      // paid status and persisting is enough — no manual adjustment needed.
       item.paid = item.paid === "Yes" ? "No" : "Yes";
       persist();
       renderExpenses();
@@ -712,6 +783,8 @@ function renderBills() {
       ev.stopPropagation();
       const id = btn.dataset.togglePaid;
       const item = m.bills.find((x) => x.id === id);
+      // Balance is derived live from monthPaidTotal(), so simply flipping
+      // paid status and persisting is enough — no manual adjustment needed.
       item.paid = item.paid === "Yes" ? "No" : "Yes";
       persist();
       renderBills();
@@ -935,6 +1008,46 @@ function segValue(id) {
   return document.querySelector(`#${id} button.active`).dataset.val;
 }
 
+/* ---------------- Balance modal ---------------- */
+
+function openBalanceModal() {
+  const m = state.month;
+  if (!m) return;
+  const current = currentBalanceForKey(state.monthKey);
+  const linkNote = m.balanceMode === "linked"
+    ? "This month currently follows on from last month's balance automatically. Saving a value here fixes this month to that number instead — later months linked after it will then follow from this one."
+    : "This updates itself as you mark expenses and bills Paid/Unpaid — you shouldn't need to touch it often.";
+  showModal(`
+    <h2>Edit balance</h2>
+    <div class="helper-text" style="margin:-6px 2px 14px;">
+      Set this to what's actually in your bank account right now. ${linkNote}
+    </div>
+    <div class="field">
+      <label for="bal-amt">Current balance</label>
+      <input id="bal-amt" type="number" inputmode="decimal" step="0.01" value="${current}">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="bal-cancel">Cancel</button>
+      <button class="btn btn-primary" id="bal-save">Save</button>
+    </div>
+  `);
+  document.getElementById("bal-cancel").onclick = closeModal;
+  document.getElementById("bal-save").onclick = () => {
+    const val = parseFloat(document.getElementById("bal-amt").value);
+    const entered = isNaN(val) ? 0 : val;
+    // Store as a fixed anchor for this month. Since monthPaidTotal() gets
+    // subtracted every time the balance is computed, add it back here so
+    // the figure the person just typed is exactly what displays next.
+    m.balanceMode = "manual";
+    m.balanceLinkedFrom = null;
+    m.balanceValue = entered + monthPaidTotal(m);
+    persist();
+    closeModal();
+    renderAll();
+    toast("Balance updated");
+  };
+}
+
 /* ---------------- Income modal ---------------- */
 
 function openIncomeModal() {
@@ -1092,6 +1205,7 @@ function handleFab() {
 /* ---------------- Init & event wiring ---------------- */
 
 function init() {
+  migrateLegacyGlobalBalance();
   ensureMonth();
   renderMonthLabel();
   renderActiveView();
