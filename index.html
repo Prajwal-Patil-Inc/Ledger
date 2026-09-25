@@ -82,8 +82,31 @@ button{font-family:inherit;}
   font-size:18px; cursor:pointer; display:flex;align-items:center;justify-content:center;
 }
 .month-switch button:active{background:rgba(245,243,238,.15);}
-.month-label{font-family:var(--serif); font-size:15px; text-align:center; flex:1;}
+.month-label{font-family:var(--serif); font-size:15px; text-align:center; flex:1; cursor:pointer; border-radius:8px; padding:4px 2px;}
+.month-label:active{background:rgba(245,243,238,.12);}
 .month-label .yr{color:var(--gold); font-size:12px; margin-left:4px; font-family:var(--sans);}
+
+/* ---- Month/year picker ---- */
+.cal-year-switch{display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;}
+.cal-year-switch button{
+  background:none; border:1px solid var(--hairline); width:36px; height:36px; border-radius:9px;
+  font-size:19px; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--ink);
+}
+.cal-year-switch button:active{background:var(--paper);}
+.cal-year-label{font-family:var(--serif); font-size:19px; font-weight:600;}
+.cal-month-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:9px; margin-bottom:16px;}
+.cal-month-btn{
+  padding:15px 6px; border-radius:11px; border:1px solid var(--hairline); background:var(--paper-raised);
+  font-size:14px; font-weight:600; color:var(--ink-soft); cursor:pointer; text-align:center; position:relative;
+}
+.cal-month-btn:active{transform:scale(.97);}
+.cal-month-btn.has-data::after{
+  content:""; position:absolute; bottom:7px; left:50%; transform:translateX(-50%);
+  width:4px; height:4px; border-radius:50%; background:var(--gold);
+}
+.cal-month-btn.today{border-color:var(--gold); color:var(--ink);}
+.cal-month-btn.current{background:var(--ink); color:var(--paper); border-color:var(--ink);}
+.cal-month-btn.current.has-data::after{background:var(--gold);}
 
 /* ---- Tabs content ---- */
 .view{padding:18px; display:none; flex:1;}
@@ -337,7 +360,7 @@ button{font-family:inherit;}
     </div>
     <div class="month-switch">
       <button id="prevMonth" aria-label="Previous month">‹</button>
-      <div class="month-label" id="monthLabel">August <span class="yr">2026</span></div>
+      <div class="month-label" id="monthLabel" role="button" tabindex="0" aria-label="Jump to a different month">August <span class="yr">2026</span></div>
       <button id="nextMonth" aria-label="Next month">›</button>
     </div>
   </div>
