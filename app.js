@@ -1006,6 +1006,63 @@ function segValue(id) {
   return document.querySelector(`#${id} button.active`).dataset.val;
 }
 
+/* ---------------- Month/year picker modal ---------------- */
+
+function openMonthPickerModal() {
+  let pickerYear = state.cursor.getFullYear();
+  const monthsWithData = new Set(listMonthKeys()); // set of "YYYY-MM" keys that have data
+  const today = new Date();
+  const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+  function monthGridHtml(year) {
+    return MONTH_NAMES.map((name, i) => {
+      const key = `${year}-${String(i + 1).padStart(2, "0")}`;
+      const isSelected = year === state.cursor.getFullYear() && i === state.cursor.getMonth();
+      const isToday = year === today.getFullYear() && i === today.getMonth();
+      const hasData = monthsWithData.has(key);
+      const cls = ["cal-month-btn"];
+      if (hasData) cls.push("has-data");
+      if (isToday && !isSelected) cls.push("today");
+      if (isSelected) cls.push("current");
+      return `<button class="${cls.join(" ")}" data-month="${i}" data-year="${year}">${name}</button>`;
+    }).join("");
+  }
+
+  function draw() {
+    showModal(`
+      <h2>Jump to month</h2>
+      <div class="cal-year-switch">
+        <button id="cal-prev-year" aria-label="Previous year">‹</button>
+        <div class="cal-year-label" id="cal-year-label">${pickerYear}</div>
+        <button id="cal-next-year" aria-label="Next year">›</button>
+      </div>
+      <div class="cal-month-grid" id="cal-month-grid">${monthGridHtml(pickerYear)}</div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="cal-today">Go to current month</button>
+      </div>
+    `);
+    document.getElementById("cal-prev-year").onclick = () => { pickerYear -= 1; draw(); };
+    document.getElementById("cal-next-year").onclick = () => { pickerYear += 1; draw(); };
+    document.querySelectorAll("#cal-month-grid .cal-month-btn").forEach((b) => {
+      b.onclick = () => {
+        const y = parseInt(b.dataset.year, 10);
+        const mo = parseInt(b.dataset.month, 10);
+        state.cursor = new Date(y, mo, 1);
+        saveCursor();
+        closeModal();
+        renderAll();
+      };
+    });
+    document.getElementById("cal-today").onclick = () => {
+      state.cursor = new Date(today.getFullYear(), today.getMonth(), 1);
+      saveCursor();
+      closeModal();
+      renderAll();
+    };
+  }
+  draw();
+}
+
 /* ---------------- Balance modal ---------------- */
 
 function openBalanceModal() {
@@ -1223,6 +1280,10 @@ function init() {
   });
   document.getElementById("fabBtn").onclick = handleFab;
   document.getElementById("settingsBtn").onclick = openSettingsModal;
+  document.getElementById("monthLabel").onclick = openMonthPickerModal;
+  document.getElementById("monthLabel").onkeydown = (ev) => {
+    if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); openMonthPickerModal(); }
+  };
   document.getElementById("modalBackdrop").onclick = (ev) => {
     if (ev.target.id === "modalBackdrop") closeModal();
   };
