@@ -1,8 +1,21 @@
-const CACHE_NAME = "ledger-cache-v1";
+const CACHE_NAME = "ledger-cache-v3";
 const ASSETS = [
   "./",
   "./index.html",
   "./manifest.json",
+
+  // Styles
+  "./css/variables.css",
+  "./css/base.css",
+  "./css/layout.css",
+  "./css/components.css",
+  "./css/modals.css",
+  "./css/calendar.css",
+
+  // Script (bundled from js/ by `npm run build`)
+  "./dist/app.js",
+
+  // Icons
   "./icons/icon-192.png",
   "./icons/icon-512.png",
   "./icons/icon-512-maskable.png"

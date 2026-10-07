@@ -1,0 +1,17 @@
+:root{
+  --ink:#1B2430;
+  --ink-soft:#3C4757;
+  --paper:#F5F3EE;
+  --paper-raised:#FFFFFF;
+  --green:#2F7A5C;
+  --green-bg:#E4EFE9;
+  --brick:#B4432F;
+  --brick-bg:#F6E6E2;
+  --gold:#C99A3A;
+  --gold-bg:#F5EBD4;
+  --hairline:#DDD8CC;
+  --text-dim:#7A7568;
+  --radius:14px;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --serif: ui-serif, Georgia, "Times New Roman", serif;
+}

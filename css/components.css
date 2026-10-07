@@ -1,0 +1,86 @@
+/* ---- Hero ---- */
+.hero{
+  padding:22px 4px 18px;
+  border-bottom:1px solid var(--hairline);
+  margin-bottom:18px;
+}
+.hero-label{font-size:12.5px; color:var(--text-dim); margin-bottom:6px;}
+.hero-amount{font-family:var(--serif); font-size:44px; line-height:1; letter-spacing:-.5px;}
+.hero-amount.neg{color:var(--brick);}
+.hero-sub{display:flex; gap:16px; margin-top:12px; font-size:13px; color:var(--ink-soft);}
+.hero-sub b{color:var(--ink); font-weight:600;}
+.chip{
+  display:inline-flex; align-items:center; gap:6px; padding:5px 11px; border-radius:20px;
+  font-size:12.5px; font-weight:600; margin-top:12px;
+}
+.chip.green{background:var(--green-bg); color:var(--green);}
+.chip.gold{background:var(--gold-bg); color:#8a6a1f;}
+.chip.brick{background:var(--brick-bg); color:var(--brick);}
+.chip-dot{width:7px;height:7px;border-radius:50%;background:currentColor;}
+
+/* ---- KPI grid ---- */
+.kpi-grid{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--hairline); border:1px solid var(--hairline); border-radius:var(--radius); overflow:hidden; margin-bottom:22px;}
+.kpi{background:var(--paper-raised); padding:13px 14px;}
+.kpi-label{font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:.4px; margin-bottom:5px;}
+.kpi-value{font-size:19px; font-weight:600; font-family:var(--serif);}
+.kpi-value.small{font-size:15px;}
+
+/* ---- Section headers ---- */
+.section-head{display:flex; align-items:baseline; justify-content:space-between; margin:26px 0 10px;}
+.section-head h2{font-size:15px;}
+.section-head .hint{font-size:12px; color:var(--text-dim);}
+
+/* ---- Donut chart ---- */
+.donut-wrap{display:flex; align-items:center; gap:18px; padding:6px 0 4px;}
+.donut-legend{flex:1; display:flex; flex-direction:column; gap:7px; min-width:0;}
+.legend-row{display:flex; align-items:center; gap:8px; font-size:12.5px;}
+.legend-swatch{width:9px;height:9px;border-radius:2px; flex:0 0 auto;}
+.legend-name{flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--ink-soft);}
+.legend-pct{color:var(--text-dim); font-variant-numeric:tabular-nums;}
+
+/* ---- Insights ---- */
+.insight-row{
+  padding:11px 0; border-bottom:1px solid var(--hairline); font-size:13.5px; color:var(--ink-soft); line-height:1.45;
+}
+.insight-row:last-child{border-bottom:none;}
+.insight-row.warn{color:var(--brick); font-weight:600;}
+.insight-row.ok{color:var(--green); font-weight:600;}
+
+/* ---- Ledger list rows (expenses/bills) ---- */
+.ledger-list{border-top:1px solid var(--hairline);}
+.ledger-row{
+  display:flex; align-items:center; gap:12px; padding:13px 2px;
+  border-bottom:1px solid var(--hairline);
+}
+.ledger-main{flex:1; min-width:0;}
+.ledger-cat{font-size:14.5px; font-weight:600;}
+.ledger-meta{font-size:12px; color:var(--text-dim); margin-top:2px; display:flex; gap:6px; flex-wrap:wrap;}
+.tag{display:inline-block; padding:1px 7px; border-radius:8px; font-size:10.5px; font-weight:600;}
+.tag.fixed{background:var(--gold-bg); color:#8a6a1f;}
+.tag.variable{background:#E9E5F5; color:#5b4d99;}
+.ledger-amount{font-size:15px; font-weight:600; font-variant-numeric:tabular-nums; white-space:nowrap;}
+.paid-btn{
+  border:1px solid var(--hairline); background:var(--paper-raised); border-radius:8px;
+  font-size:11px; font-weight:600; padding:5px 9px; cursor:pointer; white-space:nowrap;
+}
+.paid-btn.yes{background:var(--green-bg); color:var(--green); border-color:transparent;}
+.paid-btn.no{background:var(--brick-bg); color:var(--brick); border-color:transparent;}
+.ledger-row.overdue{background:linear-gradient(90deg, rgba(180,67,47,.06), transparent);}
+.ledger-row.due-soon{background:linear-gradient(90deg, rgba(201,154,58,.10), transparent);}
+.empty-state{
+  text-align:center; padding:40px 20px; color:var(--text-dim);
+}
+.empty-state h3{font-size:16px; color:var(--ink); margin-bottom:6px;}
+.empty-state p{font-size:13.5px; line-height:1.5; margin:0 0 16px;}
+
+.list-total{display:flex; justify-content:space-between; padding:14px 2px 4px; font-size:14px; font-weight:600;}
+
+/* ---- Goals ---- */
+.goal-card{padding:16px 2px; border-bottom:1px solid var(--hairline);}
+.goal-card:last-child{border-bottom:none;}
+.goal-top{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px;}
+.goal-name{font-family:var(--serif); font-size:16px;}
+.goal-amounts{font-size:12.5px; color:var(--text-dim);}
+.goal-bar-track{height:8px; border-radius:5px; background:var(--hairline); overflow:hidden;}
+.goal-bar-fill{height:100%; background:var(--green); border-radius:5px;}
+.goal-foot{display:flex; justify-content:space-between; font-size:12px; color:var(--text-dim); margin-top:7px;}

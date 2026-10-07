@@ -1,0 +1,13 @@
+{
+  "name": "ledger",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Ledger — personal finance PWA",
+  "scripts": {
+    "build": "esbuild js/main.js --bundle --format=iife --target=es2020 --outfile=dist/app.js",
+    "watch": "npm run build -- --watch"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.0"
+  }
+}
