@@ -614,8 +614,13 @@
 
           <button type="button" id="add-amt">+</button>
         </div>
-
-        <div id="add-amount-area" class="add-amount-area" hidden>
+      </div>
+      <div class="field">
+        <label for="f-due">Due date (day)</label>
+        <input id="f-due" type="number" min="1" max="31" placeholder="1\u201331" value="${existing?.due ?? ""}">
+      </div>
+      </div>
+      <div id="add-amount-area" class="add-amount-area" hidden>
           <input
             id="f-add-amt"
             type="number"
@@ -627,12 +632,6 @@
           <button type="button" id="confirm-add">Add</button>
           <button type="button" id="cancel-add">Cancel</button>
         </div>
-      </div>
-      <div class="field">
-        <label for="f-due">Due date (day)</label>
-        <input id="f-due" type="number" min="1" max="31" placeholder="1\u201331" value="${existing?.due ?? ""}">
-      </div>
-    </div>
     <div class="field">
       <label>Recurring</label>
       <div class="seg" id="f-rec">

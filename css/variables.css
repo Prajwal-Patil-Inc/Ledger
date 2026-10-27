@@ -1,17 +1,19 @@
-:root{
-  --ink:#1B2430;
-  --ink-soft:#3C4757;
-  --paper:#F5F3EE;
-  --paper-raised:#FFFFFF;
-  --green:#2F7A5C;
-  --green-bg:#E4EFE9;
-  --brick:#B4432F;
-  --brick-bg:#F6E6E2;
-  --gold:#C99A3A;
-  --gold-bg:#F5EBD4;
-  --hairline:#DDD8CC;
-  --text-dim:#7A7568;
-  --radius:14px;
-  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+:root {
+  --ink: #1b2430;
+  --ink-soft: #3c4757;
+  --paper: #f5f3ee;
+  --paper-raised: #ffffff;
+  --green: #2f7a5c;
+  --green-bg: #e4efe9;
+  --brick: #b4432f;
+  --brick-bg: #f6e6e2;
+  --gold: #c99a3a;
+  --gold-bg: #f5ebd4;
+  --hairline: #ddd8cc;
+  --text-dim: #7a7568;
+  --radius: 14px;
+  --sans:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
   --serif: ui-serif, Georgia, "Times New Roman", serif;
 }
