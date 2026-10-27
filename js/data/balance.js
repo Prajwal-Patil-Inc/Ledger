@@ -25,7 +25,7 @@ export function currentBalanceForKey(key, _depth = 0) {
   if (m.balanceMode === "linked" && m.balanceLinkedFrom) {
     base = totalIncome(m) + currentBalanceForKey(m.balanceLinkedFrom, _depth + 1);
   } else {
-    base = typeof m.balanceValue === "number" ? m.balanceValue : 0;
+    base = (typeof m.balanceValue === "number" ? m.balanceValue : 0) + totalIncome(m);
   }
   return base - monthPaidTotal(m);
 }

@@ -5,6 +5,7 @@ import { currentBalanceForKey, monthPaidTotal } from "../data/balance.js";
 import { showModal, closeModal } from "../ui/modal.js";
 import { toast } from "../ui/toast.js";
 import { renderAll } from "../render/shell.js";
+import { totalIncome } from "../entities/month.js";
 
 export function openBalanceModal() {
   const m = state.month;
@@ -36,7 +37,7 @@ export function openBalanceModal() {
     // the figure the person just typed is exactly what displays next.
     m.balanceMode = "manual";
     m.balanceLinkedFrom = null;
-    m.balanceValue = entered + monthPaidTotal(m);
+    m.balanceValue = entered + monthPaidTotal(m) - totalIncome(m);
     persist();
     closeModal();
     renderAll();
