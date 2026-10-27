@@ -190,7 +190,7 @@
     if (m.balanceMode === "linked" && m.balanceLinkedFrom) {
       base = totalIncome(m) + currentBalanceForKey(m.balanceLinkedFrom, _depth + 1);
     } else {
-      base = typeof m.balanceValue === "number" ? m.balanceValue : 0;
+      base = (typeof m.balanceValue === "number" ? m.balanceValue : 0) + totalIncome(m);
     }
     return base - monthPaidTotal(m);
   }
@@ -386,7 +386,7 @@
       const entered = isNaN(val) ? 0 : val;
       m.balanceMode = "manual";
       m.balanceLinkedFrom = null;
-      m.balanceValue = entered + monthPaidTotal(m);
+      m.balanceValue = entered + monthPaidTotal(m) - totalIncome(m);
       persist();
       closeModal();
       renderAll();
